@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paytm Growth Pack – Demo</title>
+<style>
+:root{
+  --blue:#00B9F1; --blue-d:#0A8FD8; --blue-bg:#E6F7FE; --navy:#002970; --ink:#0B1B3A; --muted:#5B6B86;
+  --line:#E3EAF3; --bg:#F2F7FC; --card:#fff;
+  --green:#12B76A; --green-bg:#E7F8EF; --red:#E5484D; --red-bg:#FDECEC; --amber:#D98A00; --amber-bg:#FFF5E0;
+  --radius:16px; --shadow:0 6px 24px rgba(0,41,112,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif}
+button{font:inherit;cursor:pointer;border:0}
+button:disabled{cursor:not-allowed;opacity:.5}
+h1,h2,h3{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+
+/* Header */
+header{position:sticky;top:0;z-index:10;background:var(--navy);color:#fff;display:flex;align-items:center;gap:20px;padding:10px 20px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.brand{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),#5BD6FF);display:grid;place-items:center;font-weight:800;color:var(--navy);font-size:18px}
+.brand b{font-size:17px;display:block}
+.brand span{font-size:12px;opacity:.75}
+nav{display:flex;gap:6px;flex:1;justify-content:center;flex-wrap:wrap}
+.tab{background:transparent;color:#cfe3ff;padding:8px 14px;border-radius:10px;font-weight:600}
+.tab:hover{background:rgba(255,255,255,.08)}
+.tab.on{background:var(--blue);color:var(--navy)}
+.tab i{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.15);font-size:12px;margin-right:6px}
+.tab.on i{background:var(--navy);color:#fff}
+.reset{background:#fff;color:var(--navy);padding:8px 14px;border-radius:10px;font-weight:700}
+
+main{max-width:1240px;margin:0 auto;padding:20px}
+section.screen{display:none}
+section.screen.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.card h3{font-size:15px;margin-bottom:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.live{background:var(--green-bg);color:var(--green)}
+.pill.paused{background:var(--amber-bg);color:var(--amber)}
+.pill.flagged{background:var(--red-bg);color:var(--red)}
+.pill.none{background:#EEF2F7;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.live .dot{animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.btn{background:var(--blue);color:var(--navy);font-weight:700;padding:10px 16px;border-radius:12px}
+.btn.navy{background:var(--navy);color:#fff}
+.btn.ghost{background:#EEF4FA;color:var(--navy)}
+.btn.red{background:var(--red-bg);color:var(--red)}
+.btn.green{background:var(--green);color:#fff}
+
+/* Screen 1: merchant */
+.merchant{display:grid;grid-template-columns:1fr 340px;gap:20px}
+.chat{display:flex;flex-direction:column;height:calc(100vh - 112px);min-height:500px;padding:0;overflow:hidden}
+.chat-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.sb-mini{width:40px;height:40px;border-radius:12px;background:var(--navy);display:grid;place-items:center;color:var(--blue);font-weight:800}
+.chat-head .grow{flex:1}
+.speak-toggle{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+#chatLog{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(#fbfdff,#f4f9fe)}
+.msg{max-width:78%;padding:10px 14px;border-radius:16px;white-space:pre-line}
+.msg.ai{background:#fff;border:1px solid var(--line);border-top-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--navy);color:#fff;border-top-right-radius:4px;align-self:flex-end}
+.msg .who{font-size:11px;font-weight:700;color:var(--blue-d);margin-bottom:2px;display:block}
+.typing span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--muted);animation:bounce 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{50%{transform:translateY(-4px);opacity:.4}}
+.bars{display:flex;align-items:flex-end;gap:8px;height:90px;margin:10px 0 4px}
+.bars div{flex:1;background:var(--blue);border-radius:6px 6px 2px 2px;position:relative;min-width:24px}
+.bars div.low{background:#9ADFF7}
+.bars label{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
+.proposal{margin-top:8px;border:1.5px solid var(--blue);border-radius:14px;padding:12px;background:var(--blue-bg);white-space:normal}
+.proposal .big{font-size:22px;font-weight:800;color:var(--navy)}
+.proposal ul{margin:8px 0;padding-left:18px}
+.proposal .why{font-size:13px;color:var(--muted)}
+.proposal .acts{display:flex;gap:8px;margin-top:10px}
+.decided{font-weight:700;margin-top:8px}
+.livebanner{display:flex;align-items:center;gap:10px;background:var(--green-bg);color:#05603A;border:1px solid #b5ecd0;padding:10px 14px;border-radius:12px;font-weight:700;white-space:normal}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;white-space:normal}
+.stat{background:#F5F9FD;border-radius:10px;padding:8px 10px}
+.stat b{display:block;font-size:18px;color:var(--navy)}
+.stat span{font-size:12px;color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:10px 18px 0}
+.chip{background:var(--blue-bg);color:var(--navy);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600}
+.composer{display:flex;gap:10px;padding:12px 18px 16px}
+.composer input{flex:1;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;outline:none}
+.composer input:focus{border-color:var(--blue)}
+.mic{width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
+.mic.rec{background:var(--red);animation:ring 1s infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(229,72,77,.5)}100%{box-shadow:0 0 0 14px rgba(229,72,77,0)}}
+.side{display:flex;flex-direction:column;gap:14px}
+.side select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#fff}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:5px 0}
+.budget{height:10px;background:#EAF0F6;border-radius:999px;overflow:hidden;margin:6px 0}
+.budget div{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .5s}
+.nearby{list-style:none;margin:0;padding:0}
+.nearby li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.nearby li:last-child{border:0}
+
+/* Screen 2: customer phone */
+.cust{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:start;justify-content:center;max-width:900px;margin:0 auto}
+.phone{width:340px;height:min(680px,calc(100vh - 110px));min-height:560px;border-radius:44px;background:#0B1B3A;padding:12px;box-shadow:0 20px 50px rgba(0,41,112,.25)}
+.screenp{height:100%;border-radius:34px;background:#F6F9FC;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:110px;height:26px;background:#0B1B3A;border-radius:14px}
+.statusbar{display:flex;justify-content:space-between;padding:10px 22px 0;font-size:12px;font-weight:700;height:36px}
+.success{background:linear-gradient(160deg,var(--navy),#0A4AB0);color:#fff;text-align:center;padding:18px 18px 22px;margin:0 10px;border-radius:22px}
+.tick{width:58px;height:58px;border-radius:50%;background:var(--green);display:grid;place-items:center;margin:0 auto 8px;animation:pop .4s ease}
+@keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
+.success .amt{font-size:34px;font-weight:800}
+.success .ref{font-size:11px;opacity:.7;margin-top:6px}
+.pbody{padding:14px 14px;flex:1;overflow-y:auto}
+.pbody h4{margin:4px 2px 10px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.offer-card{background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 20px rgba(0,41,112,.12);border:1.5px solid var(--blue);animation:slide .45s ease}
+@keyframes slide{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.offer-card .tag{font-size:11px;font-weight:800;color:var(--blue-d);letter-spacing:.06em}
+.offer-card .t{font-size:19px;font-weight:800;color:var(--navy);margin:4px 0}
+.offer-card .btn{width:100%;margin-top:10px}
+.empty{background:#fff;border-radius:16px;padding:18px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line)}
+.pfoot{padding:10px;text-align:center;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+.explain h2{font-size:22px;color:var(--navy);margin-bottom:8px}
+.explain ol{padding-left:20px;color:var(--muted)}
+.explain .card{margin-top:16px}
+
+/* Screen 3: POS */
+.pos{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.bill .line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.bill .total{font-size:26px;font-weight:800;color:var(--navy);border:0;padding-top:12px}
+.bill .disc{color:var(--green);font-weight:700}
+.seg{display:flex;background:#EEF4FA;border-radius:12px;padding:4px;gap:4px;margin:14px 0}
+.seg button{flex:1;background:transparent;padding:9px 6px;border-radius:9px;font-weight:600;color:var(--muted);font-size:13px}
+.seg button.on{background:#fff;color:var(--navy);box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.warn{background:var(--amber-bg);color:#7A4D00;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px}
+.paybtn{width:100%;padding:16px;font-size:18px;border-radius:14px;background:var(--navy);color:#fff;font-weight:800}
+.paybtn b{color:var(--blue)}
+.soundwrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.soundbox{width:230px;height:280px;border-radius:36px;background:linear-gradient(170deg,#0d2a63,#061533);position:relative;box-shadow:0 18px 40px rgba(0,41,112,.35);display:flex;flex-direction:column;align-items:center;padding-top:22px;transition:box-shadow .3s}
+.soundbox.speaking{box-shadow:0 0 0 6px rgba(0,185,241,.35),0 0 60px rgba(0,185,241,.6),0 18px 40px rgba(0,41,112,.35)}
+.lcd{width:170px;height:62px;border-radius:12px;background:#0f3b2a;color:#7CFFB2;font:700 28px/62px ui-monospace,Menlo,Consolas,monospace;text-align:center;letter-spacing:1px;box-shadow:inset 0 2px 8px rgba(0,0,0,.5)}
+.grille{width:150px;height:150px;border-radius:50%;margin-top:20px;background:radial-gradient(circle,#2b4a86 1.6px,transparent 2px) 0 0/12px 12px,#0a1f4a;border:4px solid #13306b;transition:transform .15s}
+.soundbox.speaking .grille{animation:thump .35s infinite alternate}
+@keyframes thump{to{transform:scale(1.05)}}
+.soundbox .lbl{position:absolute;bottom:12px;font-size:11px;letter-spacing:.2em;color:#7fa3e0}
+.announce{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);text-align:center;max-width:420px;min-height:52px;font-size:17px;font-weight:600;color:var(--navy)}
+.voicebar{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.receipt{margin-top:12px;background:var(--green-bg);color:#05603A;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600}
+
+/* Screen 4: admin */
+.cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi span{font-size:13px;color:var(--muted)}
+.kpi b{display:block;font-size:30px;color:var(--navy);margin-top:2px}
+.kpi small{color:var(--green);font-weight:700}
+.admin{display:grid;grid-template-columns:1fr 330px;gap:20px;align-items:start}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:8px 8px;border-bottom:1px solid var(--line)}
+td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.mine{background:var(--blue-bg)}
+tr.flash{animation:flash 1s}
+@keyframes flash{from{background:#c9f0ff}}
+.mod{font-size:12px}
+.mod.ok{color:var(--green)}.mod.bad{color:var(--red)}.mod.wait{color:var(--amber)}
+.rule{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.rule:last-child{border:0}
+.rule p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.switch{position:relative;width:44px;height:24px;flex:none;border-radius:999px;background:#CBD5E1;transition:.2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on{background:var(--green)}
+.switch.on::after{left:23px}
+.capin{width:70px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;font:inherit}
+.linkbtn{background:transparent;color:var(--blue-d);font-weight:700;font-size:13px;padding:0}
+
+@media (max-width:1050px){
+  .merchant,.admin,.pos{grid-template-columns:1fr}
+  .cust{grid-template-columns:1fr;justify-items:center}
+  .cards4{grid-template-columns:repeat(2,1fr)}
+  .chat{height:70vh}
+}
+@media (max-width:640px){
+  main{padding:12px}
+  header{flex-wrap:wrap}
+  .phone{width:100%;max-width:340px}
+  .cards4{grid-template-columns:1fr 1fr}
+  .table-wrap{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="mark">G</div><div><b>Paytm Growth Pack</b><span>AI Soundbox skill · hackathon demo</span></div></div>
+  <nav>
+    <button class="tab" data-act="tab" data-tab="1"><i>1</i>Merchant</button>
+    <button class="tab" data-act="tab" data-tab="2"><i>2</i>Customer</button>
+    <button class="tab" data-act="tab" data-tab="3"><i>3</i>Shop payment</button>
+    <button class="tab" data-act="tab" data-tab="4"><i>4</i>Admin</button>
+  </nav>
+  <button class="reset" data-act="reset" title="Clear the offer, results and chat">↺ Reset demo</button>
+</header>
+
+<main>
+  <!-- 1. Merchant -->
+  <section class="screen" id="s1">
+    <div class="merchant">
+      <div class="card chat">
+        <div class="chat-head">
+          <div class="sb-mini">AI</div>
+          <div class="grow"><b>Soundbox Assistant</b><div class="small muted">Sharma General Store · speak or type in Hindi / English</div></div>
+          <label class="speak-toggle"><input type="checkbox" id="speakReplies"> Speak replies</label>
+        </div>
+        <div id="chatLog"></div>
+        <div class="chips" id="chips"></div>
+        <form class="composer" id="composer">
+          <button type="button" class="mic" id="mic" data-act="mic" title="Speak">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>
+          </button>
+          <input id="chatInput" autocomplete="off" placeholder="Ask your Soundbox… e.g. “How was my week?”">
+          <button class="btn navy" type="submit">Send</button>
+        </form>
+      </div>
+      <div class="side" id="merchSide"></div>
+    </div>
+  </section>
+
+  <!-- 2. Customer -->
+  <section class="screen" id="s2"><div class="cust" id="custWrap"></div></section>
+
+  <!-- 3. Shop payment -->
+  <section class="screen" id="s3"><div class="pos" id="posWrap"></div></section>
+
+  <!-- 4. Admin -->
+  <section class="screen" id="s4"><div id="adminWrap"></div></section>
+</main>
+
+<script>
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const rs = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- mock data ---------- */
+const CATS = {
+  kirana:  {label:'Kirana',        avgBill:180, discount:20, minBill:200, maxCost:600,  items:[['Atta 5 kg',150],['Toor dal 1 kg',90]]},
+  bakery:  {label:'Bakery',        avgBill:120, discount:15, minBill:150, maxCost:450,  items:[['Cake 500 g',140],['Cookies',50]]},
+  salon:   {label:'Salon',         avgBill:350, discount:50, minBill:400, maxCost:1000, items:[['Haircut',250],['Beard trim & wash',190]]},
+  medical: {label:'Medical store', avgBill:250, discount:25, minBill:300, maxCost:750,  items:[['Medicines',260],['Vitamins',80]]},
+};
+const WEEK = [2900,2300,2500,2700,3100,2400,2500];
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const BLOCKED = ['tobacco','alcohol'];
+const MOCK_CAMPAIGNS = [
+  {shop:'Gupta Chai Stall',   locality:'Lajpat Nagar', category:'chai',        offer:'₹10 off on ₹100+',    discount:10,  red:14, sales:1540, disc:140, base:'live'},
+  {shop:'Lifeline Medical',   locality:'Koramangala',  category:'medical',     offer:'₹25 off on ₹300+',    discount:25,  red:9,  sales:3060, disc:225, base:'live'},
+  {shop:'Fresh Crust Bakery', locality:'Andheri West', category:'bakery',      offer:'₹15 off on ₹150+',    discount:15,  red:30, sales:5250, disc:450, base:'paused', note:'Budget used up · auto-paused'},
+  {shop:'Glow Salon',         locality:'Indiranagar',  category:'salon',       offer:'₹50 off on ₹400+',    discount:50,  red:6,  sales:2700, disc:300, base:'live'},
+  {shop:'City Mobile Hub',    locality:'Karol Bagh',   category:'electronics', offer:'₹150 off on ₹1,000+', discount:150, red:0,  sales:0,    disc:0,   base:'live'},
+  {shop:'Raju Pan Corner',    locality:'Karol Bagh',   category:'tobacco',     offer:'₹10 off on ₹50+',     discount:10,  red:0,  sales:0,    disc:0,   base:'live'},
+];
+
+function freshState(){
+  return {
+    shop:{name:'Sharma General Store', category:'kirana', locality:'Lajpat Nagar'},
+    nearby:[
+      {name:'Gupta Chai Stall',      type:'Chai stall',    dist:50,  shoppers:310},
+      {name:'Fresh Crust Bakery',    type:'Bakery',        dist:80,  shoppers:220},
+      {name:'Style Point Salon',     type:'Salon',         dist:120, shoppers:130},
+      {name:'Lifeline Medical Store',type:'Medical store', dist:150, shoppers:180},
+    ],
+    offer:null,                 // {discount,minBill,maxCost,audience,newOnly,status}
+    results:{redemptions:0, sales:0, discount:0, repeat:0},
+    chat:[{from:'ai', type:'text', text:'Namaste Sharma ji! I am your Soundbox assistant. Ask me about your sales, or ask me to bring new customers to your shop.'}],
+    customers:['Priya','Rahul','Anjali','Vikram','Neha','Arjun'], custIdx:0, usedToday:{},
+    rules:{onePerDay:true, blockCats:true, capOn:true, cap:50},
+    flags:{week:false},
+    tab:1, payMode:'regular', lastPay:null,
+  };
+}
+
+let state;
+try { const s = JSON.parse(localStorage.getItem('growthpack')); state = s && s.shop ? Object.assign(freshState(), s) : freshState(); }
+catch(e){ state = freshState(); }
+function save(){ try{ localStorage.setItem('growthpack', JSON.stringify(state)); }catch(e){} }
+
+/* ---------- derived ---------- */
+const cat = () => CATS[state.shop.category];
+const audience = () => state.nearby.reduce((a,n)=>a+n.shoppers,0);
+const customer = () => state.customers[state.custIdx % state.customers.length];
+const billItems = () => cat().items;
+const billTotal = () => billItems().reduce((a,i)=>a+i[1],0);
+
+function sharmaRow(){
+  const o = state.offer; if(!o) return null;
+  return {shop:state.shop.name, locality:state.shop.locality, category:state.shop.category,
+    offer:`₹${o.discount} off on ₹${o.minBill}+`, discount:o.discount,
+    red:state.results.redemptions, sales:state.results.sales, disc:state.results.discount,
+    base:o.status, mine:true, maxCost:o.maxCost};
+}
+function moderate(r){
+  if(state.rules.blockCats && BLOCKED.includes(r.category)) return {status:'flagged', mod:'Blocked category: '+r.category, cls:'bad'};
+  if(state.rules.capOn && r.discount > state.rules.cap) return {status:'flagged', mod:`₹${r.discount} off is above the ₹${state.rules.cap} cap`, cls:'bad'};
+  if(r.base==='paused') return {status:'paused', mod:r.note || 'Paused by merchant', cls:'wait'};
+  if(r.base==='completed') return {status:'paused', mod:'Budget reached · auto-paused', cls:'wait'};
+  return {status:'live', mod: r.mine ? `Approved · cost capped at ${rs(r.maxCost)}` : 'Approved · margin-safe', cls:'ok'};
+}
+const offerStatus = () => state.offer ? moderate(sharmaRow()).status : 'none';
+const offerLive = () => offerStatus()==='live';
+
+function offerBlock(){
+  const o = state.offer;
+  if(!o) return 'No Growth Pack offer is live, so this is a normal payment.';
+  const m = moderate(sharmaRow());
+  if(m.status!=='live') return `The offer is ${m.status} (${m.mod}), so this is a normal payment.`;
+  if(billTotal() < o.minBill) return `Bill is below the ₹${o.minBill} minimum.`;
+  if(state.results.discount + o.discount > o.maxCost) return 'Offer budget is used up.';
+  if(state.rules.onePerDay && state.usedToday[customer()]) return `${customer()} already used an offer today (rule: one offer per user per day).`;
+  return null;
+}
+
+/* ---------- speech ---------- */
+let voices = [];
+function loadVoices(){ voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; renderVoiceInfo(); }
+if(window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+const hindiVoice = () => voices.find(v=>/^hi/i.test(v.lang));
+const indianEnVoice = () => voices.find(v=>/en[-_]IN/i.test(v.lang)) || voices.find(v=>/^en/i.test(v.lang));
+
+function speak({hi, roman, en}, onStart, onEnd){
+  if(!window.speechSynthesis){ onStart&&onStart(); setTimeout(()=>onEnd&&onEnd(), 2500); return; }
+  speechSynthesis.cancel();
+  let u;
+  if(en){ u = new SpeechSynthesisUtterance(en); const v = indianEnVoice(); if(v){u.voice=v; u.lang=v.lang;} else u.lang='en-IN'; }
+  else {
+    const hv = hindiVoice();
+    if(hv){ u = new SpeechSynthesisUtterance(hi); u.voice = hv; u.lang = hv.lang; u.rate = .95; }
+    else { u = new SpeechSynthesisUtterance(roman); const v = indianEnVoice(); if(v){u.voice=v;} u.lang = v ? v.lang : 'hi-IN'; u.rate = .9; }
+  }
+  let ended = false; const done = () => { if(!ended){ ended = true; onEnd&&onEnd(); } };
+  u.onstart = () => onStart&&onStart(); u.onend = done; u.onerror = done;
+  speechSynthesis.speak(u);
+  setTimeout(done, 9000); // safety in case onend never fires
+}
+
+/* ---------- chat logic ---------- */
+function push(msg){ state.chat.push(msg); render(); scrollChat(); }
+function scrollChat(){ const l = $('#chatLog'); requestAnimationFrame(()=> l.scrollTop = l.scrollHeight); }
+let typingTimer = null;
+function aiReply(build){
+  const log = $('#chatLog');
+  const t = document.createElement('div'); t.className='msg ai typing'; t.innerHTML='<span></span><span></span><span></span>';
+  log.appendChild(t); scrollChat();
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(()=>{ t.remove(); const m = build(); push(m); if($('#speakReplies').checked && m && m.say) speak({en:m.say}); }, 750);
+}
+
+function handleUser(text){
+  text = text.trim(); if(!text) return;
+  push({from:'me', type:'text', text});
+  const t = text.toLowerCase();
+  if(/(offer|campaign).*(go|result|kaisa|kaise|perform|status|doing)|how did|kitne|results?/.test(t)) aiReply(resultsMsg);
+  else if(/week|hafta|hafte|sales|business|bikri|dhanda/.test(t)) aiReply(summaryMsg);
+  else if(/customer|grahak|footfall|more people|badha|growth|offer/.test(t)) aiReply(proposalMsg);
+  else if(/pause|stop|band|end/.test(t)) aiReply(()=>{ if(state.offer){ endOffer(false); return {from:'ai',type:'text',text:'Done. Your offer has been stopped and removed from nearby customers\' phones.', say:'Done. Your offer has been stopped.'}; } return {from:'ai',type:'text',text:'There is no offer running right now.'}; });
+  else if(/^(yes|haan|ha|ok|approve|theek)/.test(t) && pendingProposal()) aiReply(()=>{ approve(); return null; });
+  else if(/^(no|nahi|reject|mat)/.test(t) && pendingProposal()) aiReply(()=>{ reject(); return null; });
+  else aiReply(()=>({from:'ai',type:'text',text:'I can help with three things right now: your weekly sales, bringing new customers with an offer, and how your offer is doing. Try one of the suggestions below.'}));
+}
+// aiReply with null result (approve/reject push their own messages)
+const _push = push;
+push = function(m){ if(m) _push(m); };
+
+function summaryMsg(){
+  state.flags.week = true;
+  const k = cat().avgBill/180;
+  const days = WEEK.map(v=>Math.round(v*k/10)*10);
+  const total = days.reduce((a,b)=>a+b,0);
+  const payments = Math.round(total/cat().avgBill);
+  let text = `This week you made ${rs(total)} from ${payments} Paytm payments (average bill ${rs(cat().avgBill)}).\nThat is 8% lower than last week. Tuesday was your slowest day.`;
+  if(state.results.redemptions) text += `\nGrowth Pack brought you ${state.results.redemptions} new customer${state.results.redemptions>1?'s':''} so far.`;
+  else text += `\nI can bring new customers from shops on your street. Just ask.`;
+  return {from:'ai', type:'summary', text, days, say:`This week you made ${total} rupees from ${payments} payments. That is 8 percent lower than last week.`};
+}
+function proposalMsg(){
+  if(state.offer && offerStatus()==='live') return {from:'ai',type:'text',text:`Your offer is already live and showing to ${audience()} nearby shoppers. Ask me "How did the offer go?" to see results.`};
+  const c = cat();
+  state.chat.forEach(m=>{ if(m.type==='proposal' && !m.decided) m.decided='expired'; });
+  return {from:'ai', type:'proposal', decided:null,
+    offer:{discount:c.discount, minBill:c.minBill, maxCost:c.maxCost, audience:audience(), newOnly:true},
+    say:`I suggest ${c.discount} rupees off on bills above ${c.minBill}, for new customers only. It will cost you at most ${c.maxCost} rupees. Should I start it?`};
+}
+function resultsMsg(){
+  const r = state.results;
+  if(!state.offer && !r.redemptions) return {from:'ai',type:'text',text:'You have no offer running yet. Ask me for new customers and I will suggest one.'};
+  const st = offerStatus();
+  let text;
+  if(!r.redemptions && !r.repeat) text = `Your offer is ${st} and reaching ${audience()} nearby shoppers. No one has redeemed it yet. Most redemptions come in the evening.`;
+  else {
+    const roi = r.discount ? (r.sales/r.discount).toFixed(1) : '–';
+    text = `${r.redemptions} new customer${r.redemptions!==1?'s':''} came through the offer. Every ₹1 of discount brought ₹${roi} of sales.`;
+    if(r.repeat) text += `\n${r.repeat} of them already came back again.`;
+  }
+  return {from:'ai', type:'results', text, say: text.replace(/₹/g,'rupees ')};
+}
+function pendingProposal(){ return state.chat.find(m=>m.type==='proposal' && !m.decided); }
+
+function approve(){
+  const p = pendingProposal(); if(!p) return;
+  p.decided = 'approved';
+  state.offer = Object.assign({}, p.offer, {status:'live'});
+  _push({from:'ai', type:'live', text:''});
+  if($('#speakReplies').checked) speak({en:`Your offer is live. Showing to ${audience()} nearby shoppers.`});
+}
+function reject(){
+  const p = pendingProposal(); if(!p) return;
+  p.decided = 'rejected';
+  state.offer = null;
+  _push({from:'ai', type:'text', text:'Okay, no offer will run. You can ask me again anytime.'});
+}
+function endOffer(withMsg=true){
+  state.offer = null;
+  state.chat.forEach(m=>{ if(m.type==='proposal' && !m.decided) m.decided='expired'; });
+  if(withMsg) _push({from:'ai',type:'text',text:'Offer ended. It has been removed from nearby customers\' phones.'});
+  else render();
+}
+
+/* ---------- mic ---------- */
+function nextScripted(){
+  if(!state.flags.week) return 'How was my week?';
+  if(!state.offer) return 'I need more new customers';
+  return 'How did the offer go?';
+}
+function typeAndSend(text){
+  const inp = $('#chatInput'); inp.value=''; let i=0;
+  const iv = setInterval(()=>{ inp.value = text.slice(0, ++i); if(i>=text.length){ clearInterval(iv); setTimeout(()=>{ inp.value=''; handleUser(text); }, 250); } }, 28);
+}
+let rec = null;
+function micClick(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const mic = $('#mic');
+  if(rec){ rec.stop(); return; }
+  if(!SR || !navigator.onLine){ mic.classList.add('rec'); setTimeout(()=>{ mic.classList.remove('rec'); typeAndSend(nextScripted()); }, 900); return; }
+  rec = new SR(); rec.lang = 'en-IN'; rec.interimResults = false; rec.maxAlternatives = 1;
+  let got = false;
+  rec.onstart = () => mic.classList.add('rec');
+  rec.onresult = e => { got = true; const t = e.results[0][0].transcript; typeAndSend(t); };
+  rec.onerror = () => {};
+  rec.onend = () => { mic.classList.remove('rec'); rec = null; if(!got) typeAndSend(nextScripted()); };
+  try{ rec.start(); }catch(e){ rec=null; typeAndSend(nextScripted()); }
+}
+
+/* ---------- payment ---------- */
+let speaking = false;
+function pay(){
+  const bill = billTotal();
+  const mode = state.payMode;
+  let amount = bill, kind = 'regular';
+  if(mode==='offer' && !offerBlock()){
+    const o = state.offer;
+    amount = bill - o.discount; kind = 'offer';
+    state.results.redemptions++; state.results.sales += amount; state.results.discount += o.discount;
+    state.usedToday[customer()] = true;
+    if(state.results.discount + o.discount > o.maxCost) o.status = 'completed';
+  } else if(mode==='returning' && state.results.redemptions > 0){
+    kind = 'returning'; state.results.repeat++; state.results.sales += bill;
+  }
+  const lines = {
+    offer:     {hi:`पेटीएम ऑफ़र से नया कस्टमर आया। ${amount} रुपये प्राप्त हुए।`, roman:`Paytm offer se naya customer aaya. ${amount} rupaye prapt hue.`},
+    returning: {hi:`पुराना ग्राहक फिर से आया। ${amount} रुपये प्राप्त हुए।`,      roman:`Purana grahak phir se aaya. ${amount} rupaye prapt hue.`},
+    regular:   {hi:`पेटीएम पर ${amount} रुपये प्राप्त हुए।`,                       roman:`Paytm par ${amount} rupaye prapt hue.`},
+  }[kind];
+  state.lastPay = {amount, kind, text:lines.roman, cust:customer()};
+  render();
+  speak(lines, ()=>{ speaking=true; $('.soundbox')?.classList.add('speaking'); }, ()=>{ speaking=false; $('.soundbox')?.classList.remove('speaking'); });
+}
+
+/* ---------- render ---------- */
+function render(){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on', +b.dataset.tab===state.tab));
+  document.querySelectorAll('section.screen').forEach(s=>s.classList.toggle('on', s.id==='s'+state.tab));
+  renderChat(); renderSide(); renderCustomer(); renderPOS(); renderAdmin();
+  save();
+}
+
+function statusPill(st){
+  const label = {live:'Live', paused:'Paused', flagged:'Flagged', none:'No offer'}[st];
+  return `<span class="pill ${st}"><span class="dot"></span>${label}</span>`;
+}
+
+function renderChat(){
+  const log = $('#chatLog');
+  log.innerHTML = state.chat.map(m=>{
+    if(m.from==='me') return `<div class="msg me">${esc(m.text)}</div>`;
+    let body = esc(m.text);
+    if(m.type==='summary'){
+      const max = Math.max(...m.days), min = Math.min(...m.days);
+      body += `<div class="bars">${m.days.map((v,i)=>`<div class="${v===min?'low':''}" style="height:${Math.round(v/max*100)}%" title="${rs(v)}"><label>${DAYS[i]}</label></div>`).join('')}</div><div style="height:14px"></div>`;
+    }
+    if(m.type==='proposal'){
+      const o = m.offer;
+      body = `I can show your offer to people who already shop near you. Here is a safe offer:
+        <div class="proposal">
+          <div class="big">₹${o.discount} off on bills above ₹${o.minBill}</div>
+          <ul>
+            <li>Shown to about <b>${o.audience}</b> Paytm shoppers within 300 m. You see only totals, never who they are or where they paid</li>
+            <li><b>New customers only</b>, one use per person per day</li>
+            <li>Maximum cost <b>${rs(o.maxCost)}</b>, stops automatically after ${Math.floor(o.maxCost/o.discount)} redemptions</li>
+          </ul>
+          <div class="why">Why this is margin-safe: your average bill is ${rs(cat().avgBill)}. A ₹${o.minBill} minimum lifts each new basket by ₹${o.minBill-cat().avgBill}+, which covers the discount.</div>
+          ${m.decided ? `<div class="decided" style="color:${m.decided==='approved'?'var(--green)':'var(--muted)'}">${{approved:'✓ Approved',rejected:'✕ Rejected',expired:'Expired'}[m.decided]}</div>`
+            : `<div class="acts"><button class="btn green" data-act="approve">✓ Approve</button><button class="btn red" data-act="reject">✕ Reject</button></div>`}
+        </div>`;
+    }
+    if(m.type==='live'){
+      body = `<div class="livebanner"><span class="pill live"><span class="dot"></span>LIVE</span> Live: showing to ${audience()} nearby shoppers</div>
+        <div class="small muted" style="margin-top:6px">I will announce on the Soundbox whenever an offer customer pays.</div>`;
+    }
+    if(m.type==='results'){
+      const r = state.results;
+      body += `<div class="statgrid">
+        <div class="stat"><b>${r.redemptions}</b><span>Redemptions</span></div>
+        <div class="stat"><b>${rs(r.sales)}</b><span>Sales from offer</span></div>
+        <div class="stat"><b>${rs(r.discount)}</b><span>Discount given</span></div>
+        <div class="stat"><b>${r.repeat}</b><span>Repeat customers</span></div></div>`;
+    }
+    return `<div class="msg ai"><span class="who">SOUNDBOX AI</span>${body}</div>`;
+  }).join('');
+  const chips = ['How was my week?','I need more new customers','How did the offer go?'];
+  $('#chips').innerHTML = chips.map(c=>`<button class="chip" data-act="chip" data-text="${esc(c)}">${esc(c)}</button>`).join('');
+}
+
+function renderSide(){
+  const r = state.results, o = state.offer, st = offerStatus();
+  const pct = o ? Math.min(100, r.discount/o.maxCost*100) : 0;
+  $('#merchSide').innerHTML = `
+    <div class="card">
+      <h3>${esc(state.shop.name)}</h3>
+      <div class="row"><span class="muted">Category</span>
+        <select id="catSel" ${o?'disabled title="End the live offer to change category"':''}>
+          ${Object.entries(CATS).map(([k,c])=>`<option value="${k}" ${k===state.shop.category?'selected':''}>${c.label}</option>`).join('')}
+        </select></div>
+      <div class="row"><span class="muted">Average bill</span><b>${rs(cat().avgBill)}</b></div>
+      <div class="row"><span class="muted">Locality</span><b>${esc(state.shop.locality)}</b></div>
+    </div>
+    <div class="card">
+      <div class="row"><h3 style="margin:0">Growth Pack offer</h3>${statusPill(st)}</div>
+      ${o ? `
+        <div style="font-size:20px;font-weight:800;color:var(--navy);margin-top:6px">₹${o.discount} off on ₹${o.minBill}+</div>
+        <div class="small muted">${st==='live' ? `Live: showing to ${o.audience} nearby shoppers` : moderate(sharmaRow()).mod} · new customers only</div>
+        <div class="row small" style="margin-top:8px"><span>Budget used</span><b>${rs(r.discount)} / ${rs(o.maxCost)}</b></div>
+        <div class="budget"><div style="width:${pct}%"></div></div>
+        <div class="statgrid">
+          <div class="stat"><b>${r.redemptions}</b><span>Redemptions</span></div>
+          <div class="stat"><b>${rs(r.sales)}</b><span>Sales</span></div>
+          <div class="stat"><b>${rs(r.discount)}</b><span>Discount</span></div>
+          <div class="stat"><b>${r.repeat}</b><span>Repeat</span></div>
+        </div>
+        <button class="btn red" style="width:100%;margin-top:10px" data-act="endOffer">End offer</button>`
+      : `<div class="small muted" style="margin-top:6px">No offer running. Ask the assistant for new customers.</div>`}
+    </div>
+    <div class="card">
+      <h3>Your neighbourhood reach</h3>
+      <div style="font-size:24px;font-weight:800;color:var(--navy)">~${audience()} <span class="small muted" style="font-weight:600">shoppers within 300 m</span></div>
+      <ul class="nearby small" style="margin-top:8px">
+        <li><span>🔒 Totals only: no names, numbers or other shops' sales</span></li>
+        <li><span>📍 Matched inside Paytm by location, not purchase history</span></li>
+        <li><span>🙋 Shoppers can turn off nearby offers anytime</span></li>
+      </ul>
+    </div>`;
+}
+
+function renderCustomer(){
+  const o = state.offer, live = offerLive(), cust = customer();
+  const used = state.rules.onePerDay && state.usedToday[cust];
+  const chai = state.nearby[0];
+  $('#custWrap').innerHTML = `
+    <div class="phone"><div class="screenp">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span>5G ▮▮▮ 82%</span></div>
+      <div class="success">
+        <div class="tick"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></div>
+        <div style="font-weight:700">Payment successful</div>
+        <div class="amt">₹60</div>
+        <div>paid to ${esc(chai.name)}</div>
+        <div class="ref">UPI Ref 4021 8835 1190 · just now</div>
+      </div>
+      <div class="pbody">
+        <h4>Offers near you</h4>
+        ${live ? `
+          <div class="offer-card">
+            <div class="tag">NEW CUSTOMER OFFER</div>
+            <div class="t">₹${o.discount} off at ${esc(state.shop.name)}</div>
+            <div class="muted small">${chai.dist} m away · on bills above ₹${o.minBill} · valid today</div>
+            ${used ? `<button class="btn ghost" disabled>✓ Used today</button>`
+                   : `<button class="btn" data-act="useOffer">Use offer →</button>`}
+            <div class="muted" style="font-size:11px;margin-top:8px;text-align:center">Shown because you're nearby · ${esc(state.shop.name)} can't see your details · <u>Turn off nearby offers</u></div>
+          </div>`
+        : `<div class="empty">No offers near you right now.</div>`}
+      </div>
+      <div class="pfoot">Signed in as ${esc(cust)} · Paytm app (mock)</div>
+    </div></div>
+    <div class="explain">
+      <h2>What the customer sees</h2>
+      <ol>
+        <li>${esc(cust)} pays ₹60 at ${esc(chai.name)}.</li>
+        <li>Growth Pack shows a nearby offer on the success screen, only while the merchant's offer is live. Matching happens inside Paytm. The merchant never sees who the customer is or where they paid.</li>
+        <li>Tapping <b>Use offer</b> takes them to ${esc(state.shop.name)}'s counter.</li>
+      </ol>
+      <div class="card">
+        <div class="row"><b>Current customer: ${esc(cust)}</b><button class="btn ghost" data-act="nextCust">Next customer →</button></div>
+        <div class="small muted">Offer status: ${statusPill(offerStatus())}
+        ${state.rules.onePerDay ? '<br>Rule active: one offer per user per day.' : ''}</div>
+      </div>
+    </div>`;
+}
+
+function renderPOS(){
+  const items = billItems(), bill = billTotal(), o = state.offer;
+  const block = state.payMode==='offer' ? offerBlock() : null;
+  const applies = state.payMode==='offer' && !block;
+  const discount = applies ? o.discount : 0;
+  const amount = bill - discount;
+  const canReturn = state.results.redemptions > 0;
+  const lp = state.lastPay;
+  const hv = hindiVoice();
+  $('#posWrap').innerHTML = `
+    <div class="card bill">
+      <div class="row"><h3 style="margin:0">${esc(state.shop.name)} · Counter</h3>${statusPill(offerStatus())}</div>
+      <div class="seg">
+        <button class="${state.payMode==='offer'?'on':''}" data-act="mode" data-mode="offer">Offer customer (${esc(customer())})</button>
+        <button class="${state.payMode==='returning'?'on':''}" data-act="mode" data-mode="returning" ${canReturn?'':'disabled title="No offer customers yet"'}>Returning customer</button>
+        <button class="${state.payMode==='regular'?'on':''}" data-act="mode" data-mode="regular">Regular</button>
+      </div>
+      ${block ? `<div class="warn">${esc(block)}</div>` : ''}
+      ${state.payMode==='returning' ? `<div class="warn" style="background:var(--blue-bg);color:var(--navy)">New-customers-only offer: no discount for returning customers, but the visit counts as a repeat.</div>` : ''}
+      ${items.map(i=>`<div class="line"><span>${esc(i[0])}</span><span>${rs(i[1])}</span></div>`).join('')}
+      <div class="line"><b>Bill</b><b>${rs(bill)}</b></div>
+      <div class="line disc"><span>Growth Pack discount</span><span>${discount ? '−'+rs(discount) : '—'}</span></div>
+      <div class="line total"><span>Amount to pay</span><span>${rs(amount)}</span></div>
+      <button class="paybtn" data-act="pay">Pay ${rs(amount)} with <b>Paytm</b></button>
+      ${lp ? `<div class="receipt">✓ ${rs(lp.amount)} received · ${lp.kind==='offer'?'counted as a Growth Pack redemption':lp.kind==='returning'?'counted as a repeat customer':'normal payment'}</div>` : ''}
+    </div>
+    <div class="soundwrap">
+      <div class="soundbox ${speaking?'speaking':''}">
+        <div class="lcd">${lp ? '₹'+lp.amount : '₹ ----'}</div>
+        <div class="grille"></div>
+        <div class="lbl">AI SOUNDBOX</div>
+      </div>
+      <div class="announce">${lp ? '🔊 “'+esc(lp.text)+'”' : '<span class="muted">Announcements play here after payment</span>'}</div>
+      <div class="voicebar"><span id="voiceInfo">${voiceText()}</span>
+        <button class="linkbtn" data-act="testVoice">Test voice</button>
+        ${lp ? '<button class="linkbtn" data-act="replay">Replay</button>' : ''}</div>
+    </div>`;
+}
+function voiceText(){
+  if(!window.speechSynthesis) return 'Speech not supported in this browser';
+  const hv = hindiVoice();
+  return hv ? `Voice: ${esc(hv.name)} (Hindi)` : 'No Hindi voice found · using Hinglish fallback';
+}
+function renderVoiceInfo(){ const el = $('#voiceInfo'); if(el) el.innerHTML = voiceText(); }
+
+let prevSharmaRed = -1;
+function renderAdmin(){
+  const rows = MOCK_CAMPAIGNS.map(r=>Object.assign({}, r));
+  const mine = sharmaRow(); if(mine) rows.unshift(mine);
+  const mod = rows.map(moderate);
+  const live = mod.filter(m=>m.status==='live').length;
+  const red = rows.reduce((a,r)=>a+r.red,0), sales = rows.reduce((a,r)=>a+r.sales,0), disc = rows.reduce((a,r)=>a+r.disc,0);
+  const flash = mine && mine.red !== prevSharmaRed && prevSharmaRed !== -1;
+  prevSharmaRed = mine ? mine.red : -1;
+  const R = state.rules;
+  $('#adminWrap').innerHTML = `
+    <div class="cards4">
+      <div class="card kpi"><span>Live offers</span><b>${live}</b><small>${rows.length - live} paused or flagged</small></div>
+      <div class="card kpi"><span>Redemptions today</span><b>${red}</b><small>${state.results.redemptions ? '+'+state.results.redemptions+' from Sharma GS' : 'across all localities'}</small></div>
+      <div class="card kpi"><span>Sales driven</span><b>${rs(sales)}</b><small>${disc ? (sales/disc).toFixed(1)+'× return on discount' : ''}</small></div>
+      <div class="card kpi"><span>Discounts given</span><b>${rs(disc)}</b><small>${rows.length} campaigns</small></div>
+    </div>
+    <div class="admin">
+      <div class="card">
+        <h3>Campaigns by locality</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Shop</th><th>Locality</th><th>Offer</th><th>Redeemed</th><th>Sales</th><th>Status</th><th>AI moderation</th><th></th></tr></thead>
+          <tbody>${rows.map((r,i)=>`
+            <tr class="${r.mine?'mine':''} ${r.mine&&flash?'flash':''}">
+              <td><b>${esc(r.shop)}</b>${r.mine?' <span class="small muted">(demo)</span>':''}</td>
+              <td>${esc(r.locality)}</td><td>${esc(r.offer)}</td><td>${r.red}</td><td>${rs(r.sales)}</td>
+              <td>${statusPill(mod[i].status)}</td>
+              <td class="mod ${mod[i].cls}">${esc(mod[i].mod)}</td>
+              <td>${r.mine && state.offer.status!=='completed' ? `<button class="linkbtn" data-act="adminToggle">${state.offer.status==='paused'?'Resume':'Pause'}</button>` : ''}</td>
+            </tr>`).join('')}
+          </tbody></table></div>
+        ${mine ? '' : '<p class="small muted">Sharma General Store\'s campaign appears here once the merchant approves it on screen 1.</p>'}
+      </div>
+      <div class="card">
+        <h3>Rules</h3>
+        <div class="rule"><div><b>One offer per user per day</b><p>Stops the same customer redeeming twice.</p></div>
+          <button class="switch ${R.onePerDay?'on':''}" data-act="rule" data-rule="onePerDay" aria-label="Toggle one offer per user per day"></button></div>
+        <div class="rule"><div><b>Category blocking</b><p>No offers on ${BLOCKED.join(', ')}.</p></div>
+          <button class="switch ${R.blockCats?'on':''}" data-act="rule" data-rule="blockCats" aria-label="Toggle category blocking"></button></div>
+        <div class="rule"><div><b>Maximum discount cap</b><p>Flag offers above ₹<input class="capin" id="capIn" type="number" min="5" step="5" value="${R.cap}"> per bill.</p></div>
+          <button class="switch ${R.capOn?'on':''}" data-act="rule" data-rule="capOn" aria-label="Toggle maximum discount cap"></button></div>
+        <p class="small muted" style="margin-top:12px">AI moderation checks every new offer against these rules and the shop's margins before it goes live. Flagged offers are hidden from customers.</p>
+      </div>
+    </div>`;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-act]'); if(!el || el.disabled) return;
+  const a = el.dataset.act;
+  if(a==='tab'){ state.tab = +el.dataset.tab; render(); if(state.tab===1) scrollChat(); }
+  else if(a==='reset'){
+    if(window.speechSynthesis) speechSynthesis.cancel();
+    clearTimeout(typingTimer);
+    const tab = state.tab; state = freshState(); state.tab = tab; speaking=false; render();
+  }
+  else if(a==='chip') handleUser(el.dataset.text);
+  else if(a==='mic') micClick();
+  else if(a==='approve'){ approve(); }
+  else if(a==='reject'){ reject(); }
+  else if(a==='endOffer') endOffer(true);
+  else if(a==='useOffer'){ state.payMode='offer'; state.lastPay=null; state.tab=3; render(); }
+  else if(a==='nextCust'){ state.custIdx++; render(); }
+  else if(a==='mode'){ state.payMode = el.dataset.mode; render(); }
+  else if(a==='pay') pay();
+  else if(a==='testVoice') speak({hi:'नमस्ते, पेटीएम साउंडबॉक्स तैयार है।', roman:'Namaste, Paytm Soundbox taiyaar hai.'}, ()=>$('.soundbox')?.classList.add('speaking'), ()=>$('.soundbox')?.classList.remove('speaking'));
+  else if(a==='replay' && state.lastPay){ const lp = state.lastPay; const k = lp.kind, n = lp.amount;
+    const hi = k==='offer' ? `पेटीएम ऑफ़र से नया कस्टमर आया। ${n} रुपये प्राप्त हुए।` : k==='returning' ? `पुराना ग्राहक फिर से आया। ${n} रुपये प्राप्त हुए।` : `पेटीएम पर ${n} रुपये प्राप्त हुए।`;
+    speak({hi, roman:lp.text}, ()=>$('.soundbox')?.classList.add('speaking'), ()=>$('.soundbox')?.classList.remove('speaking')); }
+  else if(a==='rule'){ const k = el.dataset.rule; state.rules[k] = !state.rules[k]; render(); }
+  else if(a==='adminToggle' && state.offer){ state.offer.status = state.offer.status==='paused' ? 'live' : 'paused'; render(); }
+});
+document.addEventListener('change', e=>{
+  if(e.target.id==='catSel'){
+    state.shop.category = e.target.value;
+    state.chat.forEach(m=>{ if(m.type==='proposal' && !m.decided) m.decided='expired'; });
+    _push({from:'ai',type:'text',text:`Switched shop category to ${cat().label} (average bill ${rs(cat().avgBill)}). Ask me for new customers to get a matching offer.`});
+  }
+  if(e.target.id==='capIn'){ const v = Math.max(5, +e.target.value || 50); state.rules.cap = v; render(); }
+  if(e.target.id==='speakReplies' && !e.target.checked && window.speechSynthesis) speechSynthesis.cancel();
+});
+$('#composer').addEventListener('submit', e=>{ e.preventDefault(); const v = $('#chatInput').value; $('#chatInput').value=''; handleUser(v); });
+document.addEventListener('keydown', e=>{
+  if(e.target.matches('input,select,textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+  if(/^[1-4]$/.test(e.key)){ state.tab = +e.key; render(); if(state.tab===1) scrollChat(); }
+});
+
+render(); scrollChat();
+</script>
+</body>
+</html>
