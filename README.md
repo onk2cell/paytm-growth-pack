@@ -4,6 +4,8 @@ A clickable hackathon demo of **Growth Pack**, a new skill for the Paytm AI Soun
 
 > Demo only. It has no backend, no login and no real payments. All data is mock data kept in the browser.
 
+**Live demo:** https://onk2cell.github.io/paytm-growth-pack/
+
 ## Run it
 
 Open `index.html` in Chrome or Brave. It needs no install, no build and no internet.
